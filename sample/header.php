@@ -16,7 +16,8 @@ function init_func() : void {
 		TRP\EasyI18n\Locale::set($_COOKIE['mylang']);
 	}
 	else {
-		TRP\EasyI18n\Locale::detect(supported: 'get_supported_func');
+		$accept = TRP\EasyI18n\Detect::browser(supported: 'get_supported_func');
+		TRP\EasyI18n\Locale::set($accept ?? 'en_US');
 	}
 	setcookie('mylang', TRP\EasyI18n\Locale::get(), time()+3600*24);
 
@@ -25,7 +26,7 @@ function init_func() : void {
 }
 
 function get_supported_func() : array {
-	return ['en_US','da_DK','sv_SE'];
+	return ['en_US','da_DK','bi_VU'];
 }
 
 function head_func(string $title, string $lang) : TRP\HealDocument\Element {

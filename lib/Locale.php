@@ -7,57 +7,29 @@ declare(strict_types=1);
 namespace TRP\EasyI18n;
 
 class Locale {
+	const PATTERN = '^([a-z]{2,3})[-_]([A-Z]{2})$';
 	private static string $locale;
 
 	public static function set(string $locale) : void {
+		if(!preg_match('/'.self::PATTERN.'/u', $locale)) {
+			throw new \Exception('EasyI18: invalid locale',500);
+		}
+		$locale = preg_replace('/'.self::PATTERN.'/u',"$1_$2", $locale);
+		$locale = \Locale::acceptFromHttp($locale);
+		if(!$locale) {
+			throw new \Exception('EasyI18: locale not installed',500);
+		};
 		self::$locale = $locale;
 	}
 
 	public static function get() : string {
+		if(empty(self::$locale)) {
+			throw new \Exception('EasyI18: locale not set',500);
+		}
 		return self::$locale;
 	}
 
-	public static function detect(callable $supported, string $default = 'en_US') : void {
-		$preferences = [];
-
-		foreach(explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '') as $entry) {
-			$parts = explode(';', trim($entry), 2);
-			$tag = trim($parts[0]);
-			if(empty($tag) || $tag === '*') continue;
-			$locale = \Locale::acceptFromHttp($tag);
-			if($locale === null) continue;
-
-			$quality = 1.0;
-			if(isset($parts[1])) {
-				$quality = (float) trim(substr(trim($parts[1]), 2));
-			}
-			if($quality <= 0) continue;
-
-			$preferences[] = [
-				'locale' => $locale,
-				'quality' => $quality,
-			];
-		}
-
-		usort($preferences,fn($a, $b) => $b['quality'] <=> $a['quality']);
-
-		$support = $supported();
-		foreach($preferences as $preference) {
-			if(in_array($preference['locale'],$support,true)) {
-				self::set($preference['locale']);
-				return;
-			}
-			if($match = current(array_filter($support, fn($input) => explode('_', $input)[0] === $preference['locale'])) ?: false) {
-				self::set($match);
-				return;
-			}
-		}
-
-		self::set($default);
-		return;
-	}
-
 	public static function lang() : string {
-		return str_replace('_','-',self::$locale);
+		return str_replace('_','-',self::get());
 	}
 }
