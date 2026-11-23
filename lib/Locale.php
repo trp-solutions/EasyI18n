@@ -75,7 +75,7 @@ class Locale {
 		$locale = str_replace('.utf-8', '', $locale);
 		return $locale;
 	}
-	public static function lang(int $category) : string {
+	public static function lang(int $category = LC_MESSAGES) : string {
 		return str_replace('_','-',self::get($category));
 	}
 }

@@ -45,7 +45,7 @@ function head_func(string $title, string $lang) : TRP\HealDocument\Element {
 	$head->el('meta')->at(['charset'=>'utf-8']);
 	$head->el('title')->te('EasyI18n :: '.$title);
 	$body = $html->el('body');
-	$body->el('center')->el('h2')->te('EasyI18n :: '.$title);
+	$body->el('center')->el('h2')->te('EasyI18n :: '.$title.' ('.PHP_OS_FAMILY.')');
 	return $body;
 }
 
