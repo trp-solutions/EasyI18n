@@ -4,12 +4,33 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: EasyI18n Sample\n"
-"PO-Revision-Date: 2026-10-26 14:38+0000\n"
+"PO-Revision-Date: 2026-11-23 09:26+0000\n"
 "Language: da_DK\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "collate"
+msgstr "Sortér"
+
+msgid "current"
+msgstr "Aktuel"
+
+msgid "messages"
+msgstr "Beskeder"
+
+msgid "monetary"
+msgstr "Penge"
+
+msgid "number"
+msgstr "Tal"
 
 msgid "select_language"
 msgstr "Vælg sprog"
 
+msgid "showing"
+msgstr "Viser"
+
 msgid "success"
 msgstr "Succes"
+
+msgid "time"
+msgstr "Tid"

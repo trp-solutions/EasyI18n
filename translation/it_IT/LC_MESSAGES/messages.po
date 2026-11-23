@@ -1,0 +1,36 @@
+# EasyI18n is licensed under the Apache License 2.0 license
+# https://github.com/trp-solutions/EasyI18n/blob/main/LICENSE
+
+msgid ""
+msgstr ""
+"Project-Id-Version: EasyI18n Sample\n"
+"PO-Revision-Date: 2026-11-23 09:26+0000\n"
+"Language: it_IT\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "collate"
+msgstr "Confrontare"
+
+msgid "current"
+msgstr "Attuale"
+
+msgid "messages"
+msgstr "Messaggi"
+
+msgid "monetary"
+msgstr "Monetaria"
+
+msgid "number"
+msgstr "Numero"
+
+msgid "select_language"
+msgstr "Seleziona lingua"
+
+msgid "showing"
+msgstr "Mostra"
+
+msgid "success"
+msgstr "Successo"
+
+msgid "time"
+msgstr "Orario"

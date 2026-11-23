@@ -7,29 +7,75 @@ declare(strict_types=1);
 namespace TRP\EasyI18n;
 
 class Locale {
-	const PATTERN = '^([a-z]{2,3})[-_]([A-Z]{2})$';
-	private static string $locale;
-
-	public static function set(string $locale) : void {
-		if(!preg_match('/'.self::PATTERN.'/u', $locale)) {
-			throw new \Exception('EasyI18: invalid locale',500);
+	public static function set(Mapping ...$mappings) : array {
+		$set = [];
+		foreach($mappings as $mapping) {
+			foreach($mapping->category() as $category) {
+				$set[$category] = $mapping->locale().'.utf-8';
+			}
 		}
-		$locale = preg_replace('/'.self::PATTERN.'/u',"$1_$2", $locale);
-		$locale = \Locale::acceptFromHttp($locale);
-		if(!$locale) {
-			throw new \Exception('EasyI18: locale not installed',500);
-		};
-		self::$locale = $locale;
+		return self::setlocale($set);
 	}
+	public static function setlocale(array $new) : array {
+		$change = [];
 
-	public static function get() : string {
-		if(empty(self::$locale)) {
-			throw new \Exception('EasyI18: locale not set',500);
+		/*if(isset($new[LC_ALL])) {
+			setlocale(LC_ALL, $new[LC_ALL]);
+			putenv('LC_ALL='.$new[LC_ALL]);
+			Messages::textdomain();
+		}*/
+		if(isset($new[LC_COLLATE])) {
+			$current = setlocale(LC_COLLATE, '0');
+			if($current != $new[LC_COLLATE]) {
+				$change[LC_COLLATE] = $current;
+				setlocale(LC_COLLATE, $new[LC_COLLATE]);
+			}
 		}
-		return self::$locale;
+		if(isset($new[LC_CTYPE])) {
+			$current = setlocale(LC_CTYPE, '0');
+			if($current != $new[LC_CTYPE]) {
+				$change[LC_CTYPE] = $current;
+				setlocale(LC_CTYPE, $new[LC_CTYPE]);
+			}
+		}
+		if(isset($new[LC_MESSAGES])) {
+			$current = setlocale(LC_MESSAGES, '0');
+			if($current != $new[LC_MESSAGES]) {
+				$change[LC_MESSAGES] = $current;
+				setlocale(LC_MESSAGES, $new[LC_MESSAGES]);
+				putenv('LC_MESSAGES='.$new[LC_MESSAGES]);
+				Messages::textdomain();
+			}
+		}
+		if(isset($new[LC_NUMERIC])) {
+			$current = setlocale(LC_NUMERIC, '0');
+			if($current != $new[LC_NUMERIC]) {
+				$change[LC_NUMERIC] = $current;
+				setlocale(LC_NUMERIC, $new[LC_NUMERIC]);
+			}
+		}
+		if(isset($new[LC_TIME])) {
+			$current = setlocale(LC_TIME, '0');
+			if($current != $new[LC_TIME]) {
+				$change[LC_TIME] = $current;
+				setlocale(LC_TIME, $new[LC_TIME]);
+			}
+		}
+		if(isset($new[LC_MONETARY])) {
+			$current = setlocale(LC_MONETARY, '0');
+			if($current != $new[LC_MONETARY]) {
+				$change[LC_MONETARY] = $current;
+				setlocale(LC_MONETARY, $new[LC_MONETARY]);
+			}
+		}
+		return $change;
 	}
-
-	public static function lang() : string {
-		return str_replace('_','-',self::get());
+	public static function get(int $category) : string {
+		$locale = setlocale($category, '0');
+		$locale = str_replace('.utf-8', '', $locale);
+		return $locale;
+	}
+	public static function lang(int $category) : string {
+		return str_replace('_','-',self::get($category));
 	}
 }
