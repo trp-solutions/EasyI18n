@@ -58,12 +58,16 @@ class Locale {
 					$locales = setlocale(LC_CTYPE, self::osset($locales));
 					break;
 				case Category::MONETARY:
+					Monetary::reset();
 					$locales = setlocale(LC_MONETARY, self::osset($locales));
 					break;
 				case Category::NUMERIC:
+					Numeric::reset();
+					Monetary::reset();
 					$locales = setlocale(LC_NUMERIC, self::osset($locales));
 					break;
 				case Category::TIME:
+					Time::reset();
 					$locales = setlocale(LC_TIME, self::osset($locales));
 					break;
 				case Category::MESSAGES:

@@ -7,8 +7,17 @@ declare(strict_types=1);
 namespace TRP\EasyI18n;
 
 class Numeric {
+	private static ?object $formatter = null;
+
+	public static function init() {
+		if(self::$formatter) return;
+		self::$formatter = new \NumberFormatter(Locale::get(Category::NUMERIC), \NumberFormatter::DECIMAL);
+	}
+	public static function reset() {
+		self::$formatter = null;
+	}
 	public static function format(int|float $num) : string {
-		$fmt = new \NumberFormatter(Locale::get(Category::NUMERIC), \NumberFormatter::DECIMAL);
-		return $fmt->format($num);
+		self::init();
+		return self::$formatter->format($num);
 	}
 }

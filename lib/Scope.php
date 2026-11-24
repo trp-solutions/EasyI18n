@@ -15,9 +15,9 @@ class Scope {
 		Locale::set($this->change);
 	}
 	public static function call(callable $userfunc,Mapping ...$mappings) : mixed {
-		$locale = new self(...$mappings);
+		$scope = new self(...$mappings);
 		$result = $userfunc();
-		$locale->restore();
+		$scope->restore();
 		return $result;
 	}
 }

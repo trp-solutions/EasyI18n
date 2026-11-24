@@ -20,9 +20,6 @@ class Messages {
 		if(isset(self::$domain)) {
 			textdomain(self::$domain);
 		}
-		else {
-			throw new \Exception('EasyI18: textdomain failed',500);
-		}
 	}
 	public static function ln(string $string) : string {
 		if(($string[0] ?? null)==='_') {

@@ -38,9 +38,9 @@ foreach(MY_SUPPORTED as $rs) {
 	);
 
 	// Or use Scope directly
-	// $locale = new EasyI18n\Scope($swap);
+	// $scope = new EasyI18n\Scope($swap);
 	// localoutput($center,$rs);
-	// $locale->restore();
+	// $scope->restore();
 }
 
 $center->el('hr');
@@ -58,8 +58,7 @@ function localoutput(object $html,string $locale) : void {
 	$ul->el('li')->te(_('messages').': "'.EasyI18n\Messages::ln('_success').'"');
 
 	$now = new \DateTime('now');
-	$format = [\IntlDateFormatter::FULL,\IntlDateFormatter::SHORT];
-	$ul->el('li')->te(_('time').': '.EasyI18n\Time::format($now, $format));
+	$ul->el('li')->te(_('time').': '.EasyI18n\Time::format($now, \IntlDateFormatter::FULL, \IntlDateFormatter::SHORT, capitalize: true));
 
 	$city = ['Aarhus','Kolding','Vejle'];
 	EasyI18n\Collate::asort($city);
