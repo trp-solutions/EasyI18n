@@ -19,16 +19,16 @@ $select = $center->el('select');
 $select->at(['onchange' => 'window.location.href= "?switch="+this.value']);
 foreach(MY_SUPPORTED as $rs) {
 	$option = $select->el('option')->te($rs);
-	if($rs == EasyI18n\Locale::get(LC_MESSAGES)) {
+	if($rs == EasyI18n\Locale::get(EasyI18n\Category::MESSAGES)) {
 		$option->at(['selected']);
 	}
 };
 
 $center->el('br');
-$center->te(_('current').': '.EasyI18n\Locale::get(LC_ALL));
+$center->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
 
 foreach(MY_SUPPORTED as $rs) {
-	$swap = new EasyI18n\Mapping($rs,LC_NUMERIC,LC_TIME,LC_MESSAGES,LC_CTYPE,LC_CTYPE);
+	$swap = new EasyI18n\Mapping($rs,EasyI18n\Category::NUMERIC,EasyI18n\Category::TIME,EasyI18n\Category::MESSAGES,EasyI18n\Category::CTYPE);
 
 	EasyI18n\Scope::call(
 		function() use ($center,$rs) {
@@ -44,7 +44,7 @@ foreach(MY_SUPPORTED as $rs) {
 }
 
 $center->el('hr');
-$center->te(_('current').': '.EasyI18n\Locale::get(LC_ALL));
+$center->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
 $center->el('br');
 $center->te(_('success'));
 
@@ -53,7 +53,7 @@ function localoutput(object $html,string $locale) : void {
 	$html->el('strong')->te('Scoping: '.$locale);
 	$ul = $html->el('ul',['style'=>'list-style: none;']);
 
-	$ul->el('li')->te(_('current').': '.EasyI18n\Locale::get(LC_ALL));
+	$ul->el('li')->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
 
 	$ul->el('li')->te(_('messages').': "'.EasyI18n\Messages::ln('_success').'"');
 

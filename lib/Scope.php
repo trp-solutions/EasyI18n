@@ -9,10 +9,10 @@ namespace TRP\EasyI18n;
 class Scope {
 	private array $change;
 	public function __construct(Mapping ...$mappings) {
-		$this->change = Locale::set(...$mappings);
+		$this->change = Locale::map(...$mappings);
 	}
 	public function restore() : void {
-		Locale::setlocale($this->change);
+		Locale::set($this->change);
 	}
 	public static function call(callable $userfunc,Mapping ...$mappings) : mixed {
 		$locale = new self(...$mappings);

@@ -11,7 +11,7 @@ class Mapping {
 	private string $locale;
 	private array $category;
 
-	function __construct(string $locale,int ...$category) {
+	function __construct(string $locale,Category ...$category) {
 		if(!preg_match('/'.self::PATTERN.'/u', $locale)) {
 			throw new \Exception('EasyI18: invalid locale',500);
 		}

@@ -8,7 +8,7 @@ namespace TRP\EasyI18n;
 
 class Numeric {
 	public static function format(int|float $num) : string {
-		$fmt = new \NumberFormatter(Locale::get(LC_NUMERIC), \NumberFormatter::DECIMAL);
+		$fmt = new \NumberFormatter(Locale::get(Category::NUMERIC), \NumberFormatter::DECIMAL);
 		return $fmt->format($num);
 	}
 }

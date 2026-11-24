@@ -8,7 +8,7 @@ namespace TRP\EasyI18n;
 
 class Time {
 	public static function format(\DateTimeInterface $datetime,array|int|string|null $format = null, $capitalize = true) : string {
-		$string = \IntlDateFormatter::formatObject($datetime,$format,Locale::get(LC_TIME));
+		$string = \IntlDateFormatter::formatObject($datetime,$format,Locale::get(Category::TIME));
 		if($capitalize) {
 			$string = mb_strtoupper(mb_substr($string, 0, 1)).mb_substr($string, 1);
 		}

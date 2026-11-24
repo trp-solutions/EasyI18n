@@ -7,75 +7,123 @@ declare(strict_types=1);
 namespace TRP\EasyI18n;
 
 class Locale {
-	public static function set(Mapping ...$mappings) : array {
+	public static function map(Mapping ...$mappings) : array {
 		$set = [];
 		foreach($mappings as $mapping) {
 			foreach($mapping->category() as $category) {
-				$set[$category] = $mapping->locale().'.utf-8';
+				if(!isset($set[$category->value])) {
+					$set[$category->value] = $mapping->locale().'.utf-8';
+				}
 			}
 		}
-		return self::setlocale($set);
+		return self::set($set);
 	}
-	public static function setlocale(array $new) : array {
+	public static function get(Category $category) : string {
+		$locale = self::getlocale($category);
+		$locale = str_replace('.utf-8', '', $locale);
+		return $locale;
+	}
+	public static function set(array $new) : array {
 		$change = [];
-
-		/*if(isset($new[LC_ALL])) {
-			setlocale(LC_ALL, $new[LC_ALL]);
-			putenv('LC_ALL='.$new[LC_ALL]);
-			Messages::textdomain();
-		}*/
-		if(isset($new[LC_COLLATE])) {
-			$current = setlocale(LC_COLLATE, '0');
-			if($current != $new[LC_COLLATE]) {
-				$change[LC_COLLATE] = $current;
-				setlocale(LC_COLLATE, $new[LC_COLLATE]);
-			}
-		}
-		if(isset($new[LC_CTYPE])) {
-			$current = setlocale(LC_CTYPE, '0');
-			if($current != $new[LC_CTYPE]) {
-				$change[LC_CTYPE] = $current;
-				setlocale(LC_CTYPE, $new[LC_CTYPE]);
-			}
-		}
-		if(isset($new[LC_MESSAGES])) {
-			$current = setlocale(LC_MESSAGES, '0');
-			if($current != $new[LC_MESSAGES]) {
-				$change[LC_MESSAGES] = $current;
-				setlocale(LC_MESSAGES, $new[LC_MESSAGES]);
-				putenv('LC_MESSAGES='.$new[LC_MESSAGES]);
-				Messages::textdomain();
-			}
-		}
-		if(isset($new[LC_NUMERIC])) {
-			$current = setlocale(LC_NUMERIC, '0');
-			if($current != $new[LC_NUMERIC]) {
-				$change[LC_NUMERIC] = $current;
-				setlocale(LC_NUMERIC, $new[LC_NUMERIC]);
-			}
-		}
-		if(isset($new[LC_TIME])) {
-			$current = setlocale(LC_TIME, '0');
-			if($current != $new[LC_TIME]) {
-				$change[LC_TIME] = $current;
-				setlocale(LC_TIME, $new[LC_TIME]);
-			}
-		}
-		if(isset($new[LC_MONETARY])) {
-			$current = setlocale(LC_MONETARY, '0');
-			if($current != $new[LC_MONETARY]) {
-				$change[LC_MONETARY] = $current;
-				setlocale(LC_MONETARY, $new[LC_MONETARY]);
+		foreach($new as $key => $value) {
+			$return = self::setlocale(Category::from($key),$value);
+			if($return) {
+				$change[$key] = $return;
 			}
 		}
 		return $change;
 	}
-	public static function get(int $category) : string {
-		$locale = setlocale($category, '0');
-		$locale = str_replace('.utf-8', '', $locale);
-		return $locale;
-	}
-	public static function lang(int $category = LC_MESSAGES) : string {
+	public static function lang(Category $category = Category::MESSAGES) : string {
 		return str_replace('_','-',self::get($category));
+	}
+
+	private static function setlocale(Category $category,string $locales) : ?string {
+		if($category == Category::ALL) {
+			setlocale(LC_ALL, self::osset($locales));
+			if(in_array(PHP_OS_FAMILY,['Windows','Darwin'])) {
+				putenv('LC_ALL='.$locales);
+				Messages::textdomain();
+			}
+			return null;
+		}
+		$current = self::getlocale($category);
+		if($current != $locales) {
+			switch($category) {
+				case Category::COLLATE:
+					$locales = setlocale(LC_COLLATE, self::osset($locales));
+					break;
+				case Category::CTYPE:
+					$locales = setlocale(LC_CTYPE, self::osset($locales));
+					break;
+				case Category::MONETARY:
+					$locales = setlocale(LC_MONETARY, self::osset($locales));
+					break;
+				case Category::NUMERIC:
+					$locales = setlocale(LC_NUMERIC, self::osset($locales));
+					break;
+				case Category::TIME:
+					$locales = setlocale(LC_TIME, self::osset($locales));
+					break;
+				case Category::MESSAGES:
+					if(defined('LC_MESSAGES')) {
+						$locales = setlocale(LC_MESSAGES, self::osset($locales));
+					}
+					if(in_array(PHP_OS_FAMILY,['Windows','Darwin'])) {
+						putenv('LC_MESSAGES='.$locales);
+						Messages::textdomain();
+					}
+					break;
+				default:
+					throw new \Exception('EasyI18: unknown Category',500);
+			}
+			return $current;
+		}
+		return null;
+	}
+	private static function getlocale(Category $category) : string {
+		switch($category) {
+			case Category::ALL:
+				$locales = self::osget(setlocale(LC_ALL, '0'));
+				break;
+			case Category::COLLATE:
+				$locales = self::osget(setlocale(LC_COLLATE, '0'));
+				break;
+			case Category::CTYPE:
+				$locales = self::osget(setlocale(LC_CTYPE, '0'));
+				break;
+			case Category::MONETARY:
+				$locales = self::osget(setlocale(LC_MONETARY, '0'));
+				break;
+			case Category::NUMERIC:
+				$locales = self::osget(setlocale(LC_NUMERIC, '0'));
+				break;
+			case Category::TIME:
+				$locales = self::osget(setlocale(LC_TIME, '0'));
+				break;
+			case Category::MESSAGES:
+				if(defined('LC_MESSAGES')) {
+					$locales = self::osget(setlocale(LC_MESSAGES, '0'));
+				}
+				else {
+					$locales = getenv('LC_MESSAGES');
+				}
+				break;
+			default:
+				throw new \Exception('EasyI18: unknown Category',500);
+		}
+		return $locales;
+	}
+
+	private static function osget(string $input) : string {
+		if(PHP_OS_FAMILY=='Windows') {
+			return str_replace('-','_',$input,1);
+		}
+		return $input;
+	}
+	private static function osset(string $input) : string {
+		if(PHP_OS_FAMILY=='Windows') {
+			return str_replace('_','-',$input,1);
+		}
+		return $input;
 	}
 }

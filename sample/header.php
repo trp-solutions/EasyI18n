@@ -26,9 +26,9 @@ function init_func() : void {
 	}
 	setcookie('mylang', $gui, time()+3600*24);
 
-	$gui_map = new EasyI18n\Mapping($gui, LC_NUMERIC, LC_TIME, LC_MESSAGES, LC_CTYPE);
-	$glo_map = new EasyI18n\Mapping('da_DK', LC_COLLATE, LC_MONETARY);
-	EasyI18n\Locale::set($gui_map,$glo_map);
+	$gui_map = new EasyI18n\Mapping($gui, EasyI18n\Category::NUMERIC, EasyI18n\Category::TIME, EasyI18n\Category::MESSAGES, EasyI18n\Category::CTYPE);
+	$glo_map = new EasyI18n\Mapping('da_DK', EasyI18n\Category::COLLATE, EasyI18n\Category::MONETARY);
+	EasyI18n\Locale::map($gui_map,$glo_map);
 }
 
 function get_supported_func() : array {

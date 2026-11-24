@@ -7,8 +7,6 @@ declare(strict_types=1);
 namespace TRP\EasyI18n;
 
 class Detect {
-	private static string $locale;
-
 	public static function browser(array|callable|null $supported = null) : ?string {
 		$preferences = [];
 		$return = null;

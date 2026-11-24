@@ -8,12 +8,12 @@ namespace TRP\EasyI18n;
 
 class Monetary {
 	public static function format(float $amount) : string {
-		$fmt = new \NumberFormatter(Locale::get(LC_MONETARY), \NumberFormatter::CURRENCY);
+		$fmt = new \NumberFormatter(Locale::get(Category::MONETARY), \NumberFormatter::CURRENCY);
 		$currency = $fmt->getSymbol(\NumberFormatter::INTL_CURRENCY_SYMBOL);
 		if($currency === '¤¤') {
 			throw new \Exception('EasyI18: INTL_CURRENCY_SYMBOL failed',500);
 		}
-		$formatter = new \NumberFormatter(Locale::get(LC_MESSAGES), \NumberFormatter::CURRENCY);
+		$formatter = new \NumberFormatter(Locale::get(Category::MESSAGES), \NumberFormatter::CURRENCY);
 		return $formatter->formatCurrency($amount, $currency);
 	}
 }
