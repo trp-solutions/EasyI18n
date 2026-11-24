@@ -85,35 +85,29 @@ class Locale {
 	private static function getlocale(Category $category) : string {
 		switch($category) {
 			case Category::ALL:
-				$locales = setlocale(LC_ALL, '0');
-				break;
+				return setlocale(LC_ALL, '0');
 			case Category::COLLATE:
-				$locales = self::osget(setlocale(LC_COLLATE, '0'));
-				break;
+				return self::osget(setlocale(LC_COLLATE, '0'));
 			case Category::CTYPE:
-				$locales = self::osget(setlocale(LC_CTYPE, '0'));
-				break;
+				return self::osget(setlocale(LC_CTYPE, '0'));
 			case Category::MONETARY:
-				$locales = self::osget(setlocale(LC_MONETARY, '0'));
-				break;
+				return self::osget(setlocale(LC_MONETARY, '0'));
 			case Category::NUMERIC:
-				$locales = self::osget(setlocale(LC_NUMERIC, '0'));
-				break;
+				return self::osget(setlocale(LC_NUMERIC, '0'));
 			case Category::TIME:
-				$locales = self::osget(setlocale(LC_TIME, '0'));
-				break;
+				return self::osget(setlocale(LC_TIME, '0'));
 			case Category::MESSAGES:
 				if(defined('LC_MESSAGES')) {
-					$locales = self::osget(setlocale(LC_MESSAGES, '0'));
+					return self::osget(setlocale(LC_MESSAGES, '0'));
 				}
 				else {
-					$locales = getenv('LC_MESSAGES');
+					$value = getenv('LC_MESSAGES');
+					if($value === false) return 'C';
+					return $value;
 				}
-				break;
 			default:
 				throw new \Exception('EasyI18: unknown Category',500);
 		}
-		return $locales;
 	}
 
 	private static function osget(string $input) : string {
