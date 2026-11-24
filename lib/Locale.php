@@ -20,7 +20,9 @@ class Locale {
 	}
 	public static function get(Category $category) : string {
 		$locale = self::getlocale($category);
-		$locale = str_replace('.utf-8', '', $locale);
+		if($category != Category::ALL) {
+			$locale = str_replace('.utf-8', '', $locale);
+		}
 		return $locale;
 	}
 	public static function set(array $new) : array {
@@ -83,7 +85,7 @@ class Locale {
 	private static function getlocale(Category $category) : string {
 		switch($category) {
 			case Category::ALL:
-				$locales = self::osget(setlocale(LC_ALL, '0'));
+				$locales = setlocale(LC_ALL, '0');
 				break;
 			case Category::COLLATE:
 				$locales = self::osget(setlocale(LC_COLLATE, '0'));
@@ -116,13 +118,13 @@ class Locale {
 
 	private static function osget(string $input) : string {
 		if(PHP_OS_FAMILY=='Windows') {
-			return str_replace('-','_',$input,1);
+			return preg_replace('/-/', '_', $input, 1);
 		}
 		return $input;
 	}
 	private static function osset(string $input) : string {
 		if(PHP_OS_FAMILY=='Windows') {
-			return str_replace('_','-',$input,1);
+			return preg_replace('/_/', '-', $input, 1);
 		}
 		return $input;
 	}
