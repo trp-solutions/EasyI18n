@@ -12,10 +12,9 @@ use \TRP\EasyI18n;
 init_func();
 
 $body = head_func('Test',EasyI18n\Locale::lang());
-$center = $body->el('center');
 
-$center->el('label')->te(_('select_language').': ');
-$select = $center->el('select');
+$body->el('label')->te(_('select_language').': ');
+$select = $body->el('select');
 $select->at(['onchange' => 'window.location.href= "?switch="+this.value']);
 foreach(MY_SUPPORTED as $rs) {
 	$option = $select->el('option')->te($rs);
@@ -24,29 +23,29 @@ foreach(MY_SUPPORTED as $rs) {
 	}
 };
 
-$center->el('br');
-$center->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
+$body->el('br');
+$body->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
 
 foreach(MY_SUPPORTED as $rs) {
 	$swap = new EasyI18n\Mapping($rs,EasyI18n\Category::NUMERIC,EasyI18n\Category::TIME,EasyI18n\Category::MESSAGES,EasyI18n\Category::CTYPE);
 
 	EasyI18n\Scope::call(
-		function() use ($center,$rs) {
-			localoutput($center,$rs);
+		function() use ($body,$rs) {
+			localoutput($body,$rs);
 		},
 		$swap
 	);
 
 	// Or use Scope directly
 	// $scope = new EasyI18n\Scope($swap);
-	// localoutput($center,$rs);
+	// localoutput($body,$rs);
 	// $scope->restore();
 }
 
-$center->el('hr');
-$center->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
-$center->el('br');
-$center->te(_('success'));
+$body->el('hr');
+$body->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
+$body->el('br');
+$body->te(_('success'));
 
 function localoutput(object $html,string $locale) : void {
 	$html->el('hr');
@@ -57,7 +56,7 @@ function localoutput(object $html,string $locale) : void {
 
 	$ul->el('li')->te(_('messages').': "'.EasyI18n\Messages::ln('_success').'"');
 
-	$now = new \DateTime('now');
+	$now = new \DateTimeImmutable('now');
 	$ul->el('li')->te(_('time').': '.EasyI18n\Time::format($now, \IntlDateFormatter::FULL, \IntlDateFormatter::SHORT, capitalize: true));
 
 	$city = ['Aarhus','Kolding','Vejle'];

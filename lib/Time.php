@@ -20,13 +20,14 @@ class Time {
 		self::$formatter = [];
 	}
 	public static function format(
-		\DateTimeInterface $datetime,
+		\DateTimeInterface|string $datetime,
 		int $dateType = \IntlDateFormatter::FULL,
 		int $timeType = \IntlDateFormatter::FULL,
 		?string $pattern = null,
 		$capitalize = false,
 	) : string {
 		$formatter = self::init(dateType: $dateType, timeType: $timeType, pattern: $pattern);
+		if(is_string($datetime)) $datetime = new \DateTimeImmutable($datetime);
 		$string = $formatter->format($datetime);
 		if($capitalize) {
 			$string = mb_strtoupper(mb_substr($string, 0, 1)).mb_substr($string, 1);
