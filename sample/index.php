@@ -49,7 +49,7 @@ $body->te(_('success'));
 
 function localoutput(object $html,string $locale) : void {
 	$html->el('hr');
-	$html->el('strong')->te('Scoping: '.$locale);
+	$html->el('strong')->te('Scoping: '.\Locale::getDisplayName($locale, EasyI18n\Locale::get(EasyI18n\Category::MESSAGES)));
 	$ul = $html->el('ul',['style'=>'list-style: none;']);
 
 	$ul->el('li')->te(_('current').': '.EasyI18n\Locale::get(EasyI18n\Category::ALL));
